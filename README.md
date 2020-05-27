@@ -6,7 +6,7 @@ The overall configuration diagram is attached below.
 
 - Resource construction automation with AWS CloudFormation.
 - Automation of middleware installation and various settings by Ansible.
-- Test automation with Serverspec.
+- Testing framework used Severspec.
 - CI tool used jenkins.
 - Configuration management tool used GitHub.
 
@@ -28,7 +28,25 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 
 ## Install
 ### Install Jenkins on EC2
-- 
+1. Install JDK 8.
+```
+$ sudo yum install -y java-1.8.0-openjdk-devel.x86_64`
+```
+
+2. Add Jenkins yum repository.
+```
+$ sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+$ sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+```
+3. Change the baseurl of the connection destination from http to https.
+```
+$ sudo vi /etc/yum.repos.d/jenkins.repo
+[jenkins]
+name=Jenkins
+baseurl=https://pkg.jenkins.io/redhat
+gpgcheck=1
+```
+
 
 [1]:https://github.com/neetzama/cloudformation_study
 [2]:https://github.com/neetzama/ansible_study
