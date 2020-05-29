@@ -65,7 +65,9 @@ $ sudo yum update -y
 $ sudo yum install git -y
 ```
 3. Change ec2-user to jenkins user here.
-Details on how to switch are [posted here][4].
+Details on how to switch are [posted here][4].<br>
+Also, the jenkins user must be able to use sudo.
+Details are [posted here.][5].
 
 4. Clone rbenv from repository.
 ```
@@ -135,4 +137,5 @@ jenkins ALL=(ALL) NOPASSWD:ALL
 [1]:https://github.com/neetzama/cloudformation_study
 [2]:https://github.com/neetzama/ansible_study
 [3]:https://github.com/neetzama/serverspec_study
-[4]:###swichtojenkinsuser
+[4]:#swich-to-jenkins-user
+[5]:#allow-jenkins-users-to-the-sudo
