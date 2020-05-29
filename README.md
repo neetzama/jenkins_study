@@ -17,7 +17,6 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - Details of Ansible are [available here][2].
 - Details of Serverspec are [available here][3].
 - GitHub and Jenkins are linked by Webhooks.
-- EC2 that installs jenkins expects to run Ansible and Serverspec against the target server. Therefore, it is necessary to create the SSH key in advance.
 
 ## Requirement
 - EC2 to install jenkins is Amazon Linux 2.
@@ -26,6 +25,11 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - rbenv 1.1.2-30-gc879cb0
 - ruby 2.6.5p114
 
+## Usage
+### Create ssh key
+EC2 that installs jenkins expects to run Ansible and Serverspec against the target server. Therefore, it is necessary to create the SSH key in advance.<br>
+Also, when creating the ssh key, you need to switch to the jenkins user.<br>
+How to switch to jenkins user is [posted here][4].
 ## Install
 ### Install Jenkins on EC2
 1. Install JDK 8.
