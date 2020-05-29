@@ -19,29 +19,51 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - GitHub and Jenkins are linked by Webhooks.
 
 ## Requirement
-- EC2 to install jenkins is Amazon Linux 2.
+- EC2 to install jenkins is Amazon Linux 2
+- Target EC2 is Ubuntu 18.04
 - Jenkins 2.237
 - ansible 2.9.5
 - rbenv 1.1.2-30-gc879cb0
 - ruby 2.6.5p114
 
 ## Usage
-### Create ssh key
+### Creating and setting the ssh key
 EC2 that installs jenkins expects to run Ansible and Serverspec against the target server. Therefore, it is necessary to create the SSH key in advance.<br>
-Also, when creating the ssh key, you need to switch to the jenkins user.<br>
+Also, when creating and setting the ssh key, you need to switch to the jenkins user.<br>
 How to switch to jenkins user is [posted here][4].
+
+1. Create `.ssh` directory under `/var/lib/jenkins/`
+```
+mkdir .ssh
+```
+2. Create ssh key
+```
+$ cd /var/lib/jenkins/.ssh
+$ ssh-keygen -t rsa
+```
+3. Create an ssh configuration file and add the information
+```
+$ cd /var/lib/jenkins/.ssh
+$ sudo vi config
+
+  Host payblog
+      HostName 176.34.32.51  
+      User ubuntu
+      IdentityFile /var/lib/jenkins/.ssh/id_rsa
+```
+
 ## Install
 ### Install Jenkins on EC2
-1. Install JDK 8.
+1. Install JDK 8
 ```
 $ sudo yum install -y java-1.8.0-openjdk-devel.x86_64`
 ```
-2. Add Jenkins yum repository.
+2. Add Jenkins yum repository
 ```
 $ sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
 $ sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 ```
-3. Change the baseurl of the connection destination from http to https.
+3. Change the baseurl of the connection destination from http to https
 ```
 $ sudo vi /etc/yum.repos.d/jenkins.repo
 [jenkins]
@@ -49,7 +71,7 @@ name=Jenkins
 baseurl=https://pkg.jenkins.io/redhat
 gpgcheck=1
 ```
-4. Install Jenkins.
+4. Install Jenkins
 ```
 $ sudo yum install -y jenkins
 ```
@@ -60,11 +82,11 @@ $ sudo amazon-linux-extras install -y ansible2
 ```
 
 ### Install Serverspec on EC2
-1. Update yum.
+1. Update yum
 ```
 $ sudo yum update -y
 ```
-2. Install git.
+2. Install git
 ```
 $ sudo yum install git -y
 ```
@@ -73,7 +95,7 @@ Details on how to switch are [posted here][4].<br>
 Also, the jenkins user must be able to use sudo.
 Details are [posted here][5].
 
-4. Clone rbenv from repository.
+4. Clone rbenv from repository
 ```
 $ git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
 ```
@@ -84,11 +106,11 @@ $ echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
 $ source ~/.bash_profile
 ```
 6. Install ruby-build.
-Clone ruby-build from repository.
+Clone ruby-build from repository
 ```
 $ git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
 ```
-7. Perform the installation.
+7. Perform the installation
 ```
 $ cd ~/.rbenv/plugins/ruby-build
 $ sudo ./install.sh
@@ -111,7 +133,7 @@ $ gem install serverspec
 ```
 
 ### Switch to jenkins user
-1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell.
+1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell
 ```/etc/passwd
 root:x:0:0:root:/root:/bin/bash
 
@@ -119,7 +141,7 @@ root:x:0:0:root:/root:/bin/bash
 
 jenkins:x:996:994:Jenkins Automation Server:/var/lib/jenkins:/bin/bash
 ```
-2. Switch from ec2-user to jenkins user.
+2. Switch from ec2-user to jenkins user
 ```
 $ sudo su - jenkins
 ```
