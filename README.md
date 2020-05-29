@@ -22,7 +22,7 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 ## Requirement
 - EC2 to install jenkins is Amazon Linux 2.
 - Jenkins 2.237
-- ansible 2.9.7
+- ansible 2.9.5
 - rbenv 1.1.2-30-gc879cb0
 - ruby 2.6.5p114
 
@@ -32,7 +32,6 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 ```
 $ sudo yum install -y java-1.8.0-openjdk-devel.x86_64`
 ```
-
 2. Add Jenkins yum repository.
 ```
 $ sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
@@ -46,8 +45,94 @@ name=Jenkins
 baseurl=https://pkg.jenkins.io/redhat
 gpgcheck=1
 ```
+4. Install Jenkins.
+```
+$ sudo yum install -y jenkins
+```
 
+### Install Ansible on EC2
+```
+$ sudo amazon-linux-extras install -y ansible2
+```
+
+### Install Serverspec on EC2
+1. Update yum.
+```
+$ sudo yum update -y
+```
+2. Install git.
+```
+$ sudo yum install git -y
+```
+3. Change ec2-user to jenkins user here.
+Details on how to switch are [posted here][4].
+
+4. Clone rbenv from repository.
+```
+$ git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+```
+5. pass through rbenv PATH
+```
+$ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+$ echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+$ source ~/.bash_profile
+```
+6. Install ruby-build.
+Clone ruby-build from repository.
+```
+$ git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+```
+7. Perform the installation.
+```
+$ cd ~/.rbenv/plugins/ruby-build
+$ sudo ./install.sh
+```
+8. Install the packages required for ruby installation
+```
+$ sudo yum -y install gcc-c++ glibc-headers openssl-devel readline libyaml-devel readline-devel zlib zlib-devel libffi-devel libxml2 libxslt libxml2-devel libxslt-devel sqlite-devel
+```
+9. Install ruby 2.6.5
+```
+$ rbenv install 2.6.5
+```
+10. Specify the version of Ruby used in rbenv
+```
+$ rbenv global 2.6.5
+```
+11. Install Serverspec
+```
+$ gem install serverspec
+```
+
+### Switch to jenkins user
+1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell.
+```/etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+~ Omitted ~
+
+jenkins:x:996:994:Jenkins Automation Server:/var/lib/jenkins:/bin/bash
+```
+2. Switch from ec2-user to jenkins user.
+```
+$ sudo su - jenkins
+```
+
+### Allow jenkins users to use sudo
+1. Edit `/etc/sudoers` with visudo
+```
+$ sudo visudo
+```
+2. Add `jenkins ALL=(ALL) NOPASSWD:ALL`
+```
+#
+# Refuse to run if unable to disable echo on the tty.
+#
+Defaults   !visiblepw
+jenkins ALL=(ALL) NOPASSWD:ALL
+```
 
 [1]:https://github.com/neetzama/cloudformation_study
 [2]:https://github.com/neetzama/ansible_study
 [3]:https://github.com/neetzama/serverspec_study
+[4]:###swichtojenkinsuser
