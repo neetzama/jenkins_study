@@ -25,8 +25,6 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - ansible 2.9.5
 - rbenv 1.1.2-30-gc879cb0
 - ruby 2.6.5p114
-
-## Usage
 ### Creating and setting the ssh key
 EC2 that installs jenkins expects to run Ansible and Serverspec against the target server. Therefore, it is necessary to create the SSH key in advance.<br>
 Also, when creating and setting the ssh key, you need to switch to the jenkins user.<br>
@@ -47,10 +45,24 @@ $ cd /var/lib/jenkins/.ssh
 $ sudo vi config
 
   Host payblog
-      HostName 176.34.32.51  
+      HostName IP address 
       User ubuntu
       IdentityFile /var/lib/jenkins/.ssh/id_rsa
 ```
+### Create a target EC2 AMI
+1. Connect to EC2 (Amazon Linux 2) with jenkins installed
+
+2. Copy the contents of `/var/lib/jenkins/.ssh/id_rsa.pub`
+
+3. Prepare EC2 (Ubuntu 18.04)
+
+4. Connect to the prepared EC2
+
+5. Paste the copied contents to `/home/ubuntu/.ssh/authorized_key`
+
+6. Open the EC2 dashboard in the AWS Management Console, select EC2 (Ubuntu 18.04) and create an AMI.
+
+## Usage
 
 ## Install
 ### Install Jenkins on EC2
