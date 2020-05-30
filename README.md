@@ -18,13 +18,14 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - Details of Serverspec are [available here][3].
 - GitHub and Jenkins are linked by Webhooks.
 
-## Requirement
+## Requirements
 - EC2 to install jenkins is Amazon Linux 2
-- Target EC2 is Ubuntu 18.04
 - Jenkins 2.237
 - ansible 2.9.5
 - rbenv 1.1.2-30-gc879cb0
 - ruby 2.6.5p114
+- aws-cli/1.16.300 Python/2.7.16 Linux/4.14.173-137.229.amzn2.x86_64 botocore/1.13.36
+- Target EC2 is Ubuntu 18.04
 ### Creating and setting the ssh key
 EC2 that installs jenkins expects to run Ansible and Serverspec against the target server. Therefore, it is necessary to create the SSH key in advance.<br>
 Also, when creating and setting the ssh key, you need to switch to the jenkins user.<br>
@@ -45,11 +46,19 @@ $ cd /var/lib/jenkins/.ssh
 $ sudo vi config
 
   Host payblog
-      HostName IP address 
+      HostName 176.34.32.51
       User ubuntu
       IdentityFile /var/lib/jenkins/.ssh/id_rsa
 ```
+### Setting up the AWS CLI
+EC2 that installs jenkins needs to be able to use the AWS CLI.
+Please refer to [this][6] for the details of the setting method.<br>
+You also need to be a jenkins user.
+Details on how to switch are [posted here][4].
+
 ### Create a target EC2 AMI
+The AMI created here will be used when creating the AWS CloudFormation template file.
+
 1. Connect to EC2 (Amazon Linux 2) with jenkins installed
 
 2. Copy the contents of `/var/lib/jenkins/.ssh/id_rsa.pub`
@@ -143,6 +152,19 @@ $ rbenv global 2.6.5
 ```
 $ gem install serverspec
 ```
+### Allow jenkins users to use sudo
+1. Edit `/etc/sudoers` with visudo
+```
+$ sudo visudo
+```
+2. Add `jenkins ALL=(ALL) NOPASSWD:ALL`
+```
+#
+# Refuse to run if unable to disable echo on the tty.
+#
+Defaults   !visiblepw
+jenkins ALL=(ALL) NOPASSWD:ALL
+```
 
 ### Switch to jenkins user
 1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell
@@ -158,22 +180,10 @@ jenkins:x:996:994:Jenkins Automation Server:/var/lib/jenkins:/bin/bash
 $ sudo su - jenkins
 ```
 
-### Allow jenkins users to use sudo
-1. Edit `/etc/sudoers` with visudo
-```
-$ sudo visudo
-```
-2. Add `jenkins ALL=(ALL) NOPASSWD:ALL`
-```
-#
-# Refuse to run if unable to disable echo on the tty.
-#
-Defaults   !visiblepw
-jenkins ALL=(ALL) NOPASSWD:ALL
-```
 
 [1]:https://github.com/neetzama/cloudformation_study
 [2]:https://github.com/neetzama/ansible_study
 [3]:https://github.com/neetzama/serverspec_study
 [4]:#switch-to-jenkins-user
 [5]:#allow-jenkins-users-to-use-sudo
+[6]:https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-configure.html
