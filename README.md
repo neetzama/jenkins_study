@@ -26,6 +26,13 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - ruby 2.6.5p114
 - aws-cli/1.16.300 Python/2.7.16 Linux/4.14.173-137.229.amzn2.x86_64 botocore/1.13.36
 - Target EC2 is Ubuntu 18.04
+
+### Create S3 IAM and S3 bucket
+You need to create an IAM for S3 and an S3 bucket.
+This will be used later in Ansible job.
+- [See here][7] for how to create an S3 IAM
+- [See here][8] for how to create an S3 bucket
+
 ### Creating and setting the ssh key
 EC2 that installs jenkins expects to run Ansible and Serverspec against the target server. Therefore, it is necessary to create the SSH key in advance.<br>
 Also, when creating and setting the ssh key, you need to switch to the jenkins user.<br>
@@ -187,3 +194,5 @@ $ sudo su - jenkins
 [4]:#switch-to-jenkins-user
 [5]:#allow-jenkins-users-to-use-sudo
 [6]:https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-configure.html
+[7]:https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_users_create.html#id_users_create_console
+[8]:https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/user-guide/create-bucket.html
