@@ -137,7 +137,8 @@ cd /var/lib/jenkins/workspace/Serverspec/serverspec
 /var/lib/jenkins/.rbenv/shims/rake spec
 ```
 5. **Post-build processing**<br>
-
+Add "E-mail notification" and enter your email address.<br>
+This will send you an email when the build fails.
 
 ### Creating an Ansible job
 Select Create New Job and then select Build Freestyle Project.
@@ -160,7 +161,7 @@ Check "Delete workspace before build" and "Add timestamp to console output"
 Choose to run shell.
 As an option, we will pass variables here that can not be published to GitHub.<br>
 Describes the variable.
-- db_name :　The name of the database
+- db_name : The name of the database
 - db_user : Database master user name
 - db_peer_password : Database master password
 - db_host : AWS RDS endpoint
@@ -183,8 +184,7 @@ ansible-playbook -i hosts playbook.yml \
  -e '{SECRET_KEY: foo}' 
 ```
 5. **Post-build processing**<br>
-Add "E-mail notification" and enter your email address.<br>
-This will send you an email when the build fails.
+Add "Build another project" and select the Serverspec job.
 
 ### Creating an AWS CloudFormation job
 Select Create New Job and then select Build Freestyle Project.
