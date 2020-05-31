@@ -113,6 +113,79 @@ In Jenkins, do "Manage Jenkins> Manage users> Settings> API token" to get the AP
 Set up a webhook by doing "Settings> Webhooks> Add Webhook" on GitHub
 
 ## Usage
+### Creating a Serverspec job
+Select Create New Job and then select Build Freestyle Project.
+
+Set up the job<br>
+1. **General**<br>
+- Check "GitHub project"<br>
+  Enter `https://github.com/neetzama/serverspec_study.git` which is Serverspec's repository in "Project url"
+
+- Check "Build parameterization"<br>
+  Select "String" in "Add Parameter" and enter "payload" in the name
+
+2. **Source code management**<br>
+Select "Git" and enter `https://github.com/neetzama/serverspec_study.git` for the repository URL
+
+3. **Build environment**<br>
+Check "Delete workspace before build" and "Add timestamp to console output"
+
+4. **Build**<br>
+Choose to run shell
+```
+cd /var/lib/jenkins/workspace/Serverspec/serverspec
+/var/lib/jenkins/.rbenv/shims/rake spec
+```
+5. **Post-build processing**<br>
+
+
+### Creating an Ansible job
+Select Create New Job and then select Build Freestyle Project.
+
+Set up the job<br>
+1. **General**<br>
+- Check "GitHub project"<br>
+  Enter `https://github.com/neetzama/ansible_study.git` which is Ansible's repository in "Project url"
+
+- Check "Build parameterization"<br>
+  Select "String" in "Add Parameter" and enter "payload" in the name
+
+2. **Source code management**<br>
+Select "Git" and enter `https://github.com/neetzama/ansible_study.git` for the repository URL
+
+3. **Build environment**<br>
+Check "Delete workspace before build" and "Add timestamp to console output"
+
+4. **Build**<br>
+Choose to run shell.
+As an option, we will pass variables here that can not be published to GitHub.<br>
+Describes the variable.
+- db_name :　The name of the database
+- db_user : Database master user name
+- db_peer_password : Database master password
+- db_host : AWS RDS endpoint
+- DJANGO_AWS_ACCESS_KEY_ID : IAM created by ["Create S3 IAM and S3 bucket"][9]
+Access key
+- DJANGO_AWS_SECRET_ACCESS_KEY : IAM created by ["Create S3 IAM and S3 bucket"][9]
+Secret access key
+- DJANGO_AWS_STORAGE_BUCKET_NAME : Name of the S3 bucket created with ["Create S3 IAM and S3 bucket"][9]
+- SECRET_KEY : django secret key
+```
+cd /var/lib/jenkins/workspace/Ansible
+ansible-playbook -i hosts playbook.yml \
+ -e '{db_name: "foo"}' \
+ -e '{db_user: "foo"}' \
+ -e '{db_peer_password: "foo"}' \
+ -e '{db_host: "foo"}' \
+ -e '{DJANGO_AWS_ACCESS_KEY_ID: foo}' \
+ -e '{DJANGO_AWS_SECRET_ACCESS_KEY: foo}' \
+ -e '{DJANGO_AWS_STORAGE_BUCKET_NAME: foo}' \
+ -e '{SECRET_KEY: foo}' 
+```
+5. **Post-build processing**<br>
+Add "E-mail notification" and enter your email address.<br>
+This will send you an email when the build fails.
+
 ### Creating an AWS CloudFormation job
 Select Create New Job and then select Build Freestyle Project.
 
@@ -123,9 +196,9 @@ Set up the job<br>
 
 - Check "Build parameterization"<br>
   Select "String" in "Add Parameter" and enter "payload" in the name.
-
 2. **Source code management**<br>
 Select "Git" and enter `https://github.com/neetzama/cloudformation_study.git` for the repository URL
+
 3. **Build environment**<br>
 Check "Delete workspace before build" and "Add timestamp to console output"
 
@@ -149,10 +222,6 @@ aws cloudformation wait stack-create-complete \
 ```
 5. **Post-build processing**<br>
 Add "Build another project" and select the Ansible job.
-
-### Creating an Ansible job
-
-### Creating a Serverspec job
 
 ## Install
 ### Install Jenkins on EC2
@@ -242,3 +311,4 @@ $ gem install serverspec
 [6]:https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-configure.html
 [7]:https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_users_create.html#id_users_create_console
 [8]:https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/user-guide/create-bucket.html
+[9]:#create-s3-iam-and-s3-bucket
