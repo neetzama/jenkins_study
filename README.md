@@ -24,6 +24,7 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - ansible 2.9.5
 - rbenv 1.1.2-30-gc879cb0
 - ruby 2.6.5p114
+- git 2.23.3
 - aws-cli/1.16.300 Python/2.7.16 Linux/4.14.173-137.229.amzn2.x86_64 botocore/1.13.36
 - Target EC2 is Ubuntu 18.04
 
@@ -78,7 +79,48 @@ The AMI created here will be used when creating the AWS CloudFormation template 
 
 6. Open the EC2 dashboard in the AWS Management Console, select EC2 (Ubuntu 18.04) and create an AMI.
 
+### Switch to jenkins user
+1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell
+```/etc/passwd
+root:x:0:0:root:/root:/bin/bash
+
+~ Omitted ~
+
+jenkins:x:996:994:Jenkins Automation Server:/var/lib/jenkins:/bin/bash
+```
+2. Switch from ec2-user to jenkins user
+```
+$ sudo su - jenkins
+```
+### Allow jenkins users to use sudo
+1. Edit `/etc/sudoers` with visudo
+```
+$ sudo visudo
+```
+2. Add `jenkins ALL=(ALL) NOPASSWD:ALL`
+```
+#
+# Refuse to run if unable to disable echo on the tty.
+#
+Defaults   !visiblepw
+jenkins ALL=(ALL) NOPASSWD:ALL
+```
+### Webhook integration of GitHub and Jenkins
+It will be a specification to execute jenkins job when pushed to each repository of Github. Therefore, you need to set up GitHub webhook.
+#### API token acquisition
+In Jenkins, do "Manage Jenkins> Manage users> Settings> API token" to get the API token used for authentication
+#### GitHub webhook creation
+Set up a webhook by doing "Settings> Webhooks> Add Webhook" on GitHub
+
 ## Usage
+### Creating an AWS CloudFormation job
+1. Select Create New Job and then select Build Freestyle Project
+
+2. 
+
+### Creating an Ansible job
+
+### Creating a Serverspec job
 
 ## Install
 ### Install Jenkins on EC2
@@ -159,34 +201,6 @@ $ rbenv global 2.6.5
 ```
 $ gem install serverspec
 ```
-### Allow jenkins users to use sudo
-1. Edit `/etc/sudoers` with visudo
-```
-$ sudo visudo
-```
-2. Add `jenkins ALL=(ALL) NOPASSWD:ALL`
-```
-#
-# Refuse to run if unable to disable echo on the tty.
-#
-Defaults   !visiblepw
-jenkins ALL=(ALL) NOPASSWD:ALL
-```
-
-### Switch to jenkins user
-1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell
-```/etc/passwd
-root:x:0:0:root:/root:/bin/bash
-
-~ Omitted ~
-
-jenkins:x:996:994:Jenkins Automation Server:/var/lib/jenkins:/bin/bash
-```
-2. Switch from ec2-user to jenkins user
-```
-$ sudo su - jenkins
-```
-
 
 [1]:https://github.com/neetzama/cloudformation_study
 [2]:https://github.com/neetzama/ansible_study
