@@ -114,9 +114,41 @@ Set up a webhook by doing "Settings> Webhooks> Add Webhook" on GitHub
 
 ## Usage
 ### Creating an AWS CloudFormation job
-1. Select Create New Job and then select Build Freestyle Project
+Select Create New Job and then select Build Freestyle Project.
 
-2. 
+Set up the job<br>
+1. **General**<br>
+- Check "GitHub project"<br>
+  Enter `https://github.com/neetzama/cloudformation_study.git/` which is AWS CloudFormation's repository in "Project url"
+
+- Check "Build parameterization"<br>
+  Select "String" in "Add Parameter" and enter "payload" in the name.
+
+2. **Source code management**<br>
+Select "Git" and enter `https://github.com/neetzama/cloudformation_study.git` for the repository URL
+3. **Build environment**<br>
+Check "Delete workspace before build" and "Add timestamp to console output"
+
+4. **Build**<br>
+Choose to run shell
+```
+aws cloudformation delete-stack \
+--stack-name jenkins-cloudformation \
+--region ap-northeast-1
+
+aws cloudformation wait stack-delete-complete \
+--stack-name jenkins-cloudformation
+
+aws cloudformation create-stack \
+--stack-name jenkins-cloudformation \
+--region ap-northeast-1 \
+--template-body file:///var/lib/jenkins/workspace/CloudFormation/study.yml
+
+aws cloudformation wait stack-create-complete \
+--stack-name jenkins-cloudformation
+```
+5. **Post-build processing**<br>
+Add "Build another project" and select the Ansible job.
 
 ### Creating an Ansible job
 
