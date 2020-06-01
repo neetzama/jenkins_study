@@ -16,7 +16,7 @@ For details on AWS cloudformation, Ansible, Serverspec, please refer to the link
 - Details of AWS CloudFormation are [available here][1].
 - Details of Ansible are [available here][2].
 - Details of Serverspec are [available here][3].
-- GitHub and Jenkins are linked by Webhooks.
+- GitHub and Jenkins are linked by webhook.
 
 ## Requirements
 - EC2 to install jenkins is Amazon Linux 2
@@ -73,11 +73,18 @@ The AMI created here will be used when creating the AWS CloudFormation template 
 
 3. Prepare EC2 (Ubuntu 18.04)
 
-4. Connect to the prepared EC2
+4. Connect to the prepared EC2 (Ubuntu 18.04)
 
 5. Paste the copied contents to `/home/ubuntu/.ssh/authorized_key`
 
 6. Open the EC2 dashboard in the AWS Management Console, select EC2 (Ubuntu 18.04) and create an AMI.
+
+### Webhook integration of GitHub and Jenkins
+It will be a specification to execute jenkins job when pushed to each repository of Github. Therefore, you need to set up GitHub webhook.
+#### API token acquisition
+In Jenkins, do "Manage Jenkins> Manage users> Settings> API token" to get the API token used for authentication
+#### GitHub webhook creation
+Set up a webhook by doing "Settings> Webhooks> Add Webhook" on GitHub
 
 ### Switch to jenkins user
 1. You will need to rewrite `/etc/passwd` to allow the jenkins user to use the shell
@@ -105,14 +112,26 @@ $ sudo visudo
 Defaults   !visiblepw
 jenkins ALL=(ALL) NOPASSWD:ALL
 ```
-### Webhook integration of GitHub and Jenkins
-It will be a specification to execute jenkins job when pushed to each repository of Github. Therefore, you need to set up GitHub webhook.
-#### API token acquisition
-In Jenkins, do "Manage Jenkins> Manage users> Settings> API token" to get the API token used for authentication
-#### GitHub webhook creation
-Set up a webhook by doing "Settings> Webhooks> Add Webhook" on GitHub
 
 ## Usage
+### Start jenkins, initial settings
+1. Start jenkins.<br>
+At this time, you need to open port 8080 of the security group
+```
+$ sudo systemctl start jenkins
+```
+2. Access the IPaddress:8080.<br>
+You will be prompted to enter the initialAdminPassword.<br>
+Therefore, copy and paste `/var/lib/jenkins/secrets/initialAdminPassword`
+```
+$ cat /var/lib/jenkins/secrets/initialAdminPassword
+a0bf8be5c96143e89a9568a0001afc50
+```
+3. The plug-in installation confirmation screen is displayed.<br>
+Select "Install suggested plugins"
+
+4. When the installation of the plug-in is completed, the initial Admin user creation screen is displayed. Enter the necessary information
+
 ### Creating a Serverspec job
 Select Create New Job and then select Build Freestyle Project.
 
