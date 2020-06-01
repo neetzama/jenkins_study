@@ -41,7 +41,7 @@ How to switch to jenkins user is [posted here][4].
 
 1. Create `.ssh` directory under `/var/lib/jenkins/`
 ```
-mkdir .ssh
+$ mkdir .ssh
 ```
 2. Create ssh key
 ```
