@@ -5,10 +5,11 @@ The overall configuration diagram is attached below.
 ![jenkins構成図](https://user-images.githubusercontent.com/60305322/82865800-95f9aa00-9f62-11ea-9c8f-50e696a4ff3c.png)
 
 - Resource construction automation with AWS CloudFormation.
-- Automation of middleware installation and various settings by Ansible.
+- Ansible was used to automate the installation and various settings of the middleware required for the django application.
 - Testing resources built on AWS using Serverspec.
 - CI tool used jenkins.
 - Configuration management tool used GitHub.
+- [Here][10] is the deployed Django application.
 
 ## Description
 I've only published about Jenkins here.
@@ -331,3 +332,4 @@ $ gem install serverspec
 [7]:https://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/id_users_create.html#id_users_create_console
 [8]:https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/user-guide/create-bucket.html
 [9]:#create-s3-iam-and-s3-bucket
+[10]:test-alb-359964720.ap-northeast-1.elb.amazonaws.com
