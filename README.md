@@ -6,7 +6,7 @@ The overall configuration diagram is attached below.
 
 - Resource construction automation with AWS CloudFormation.
 - Automation of middleware installation and various settings by Ansible.
-- Testing framework used Severspec.
+- Testing resources built on AWS using Serverspec.
 - CI tool used jenkins.
 - Configuration management tool used GitHub.
 
